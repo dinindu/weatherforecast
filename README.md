@@ -7,6 +7,8 @@
 - Latitude should be a floating point number between -90 and +90
 - Longitude should be a floating point number between -180 and +180
 - Should return formatted data on success
+- Should return forecast for the specified number of days
+- Should calculate lowest and highest temperatures, snowfall correctly
 - Should have the correct naming convention for the JSON file
 - Should fail with correct error message on internal server error
 - Should return appropriate error message on bad request
