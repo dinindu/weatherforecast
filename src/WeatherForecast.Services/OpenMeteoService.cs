@@ -1,5 +1,6 @@
 using System.ComponentModel;
 using System.Globalization;
+using System.Text.Json.Serialization;
 
 using WeatherForecast.Models;
 using RestSharp;
@@ -22,20 +23,20 @@ namespace WeatherForecast.Services
 
         //TODO:remove hard coded URL
         public string BaseURL { get; set; } = "https://api.open-meteo.com";
-        public WeatherExport GetWeatherForecast(WeatherRequest request)
+        public async Task<WeatherExport> GetWeatherForecast(WeatherRequest request)
         {
-            var response = GetForecastRsponse(request);
+            var response = await GetForecastRsponse(request);
             return SummarizeForecast(response);
         }
 
-        private ForecastRsponse GetForecastRsponse(WeatherRequest request)
+        private async Task<ForecastRsponse> GetForecastRsponse(WeatherRequest weatherRequest)
         {
             var client = new RestClient(BaseURL);
             var request = new RestRequest("/v1/forecast")
-                .AddParameter("latitude", request.Latitude)
-                .AddParameter("longitude", request.Longitude)
+                .AddParameter("latitude", weatherRequest.Latitude)
+                .AddParameter("longitude", weatherRequest.Longitude)
                 .AddParameter("hourly", "temperature_2m,snowfall")
-                .AddParameter("forecast_days", request.ForecastDays);
+                .AddParameter("forecast_days", weatherRequest.ForecastDays);
 
             var response = await client.GetAsync<ForecastRsponse>(request);
             return response;
@@ -46,19 +47,19 @@ namespace WeatherForecast.Services
             var forecast = new WeatherExport();
 
             const int hours_per_day = 24;
-            IEnumerable<List<double>> dailyTemperatures = response.hourly.Temperatures.Chunk(hours_per_day);
-            IEnumerable<List<double>> dailySnowfalls = response.hourly.Snowfalls.Chunk(hours_per_day);
+            IEnumerable<double[]> dailyTemperatures = response.hourly.Temperatures.Chunk(hours_per_day);
+            IEnumerable<double[]> dailySnowfalls = response.hourly.Snowfalls.Chunk(hours_per_day);
 
             for (int i = 0; i < dailyTemperatures.Count(); i++)
             {
-                dailyTemperature = dailyTemperatures.ElementAt(i);
-                dailySnowfall = dailySnowfalls.ElementAt(i);
+                var dailyTemperature = dailyTemperatures.ElementAt(i);
+                var dailySnowfall = dailySnowfalls.ElementAt(i);
 
-                lowestTemperature = dailyTemperature.Min();
-                highestTemperature = dailyTemperature.Max();
-                totalSnowfall = dailySnowfall.Sum();
+                var lowestTemperature = dailyTemperature.Min();
+                var highestTemperature = dailyTemperature.Max();
+                var totalSnowfall = dailySnowfall.Sum();
 
-                weatherRecord = new WeatherRecord();
+                var weatherRecord = new WeatherRecord();
                 weatherRecord.LowestTemperature.TemperatureCelsius = lowestTemperature;
                 weatherRecord.HighestTemperature.TemperatureCelsius = highestTemperature;
                 weatherRecord.Snowfall = totalSnowfall;

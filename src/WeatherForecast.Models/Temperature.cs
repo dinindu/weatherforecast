@@ -3,8 +3,8 @@ namespace WeatherForecast.Models
 {
     public class Temperature
     {
-        public float TemperatureCelsius { get; set; }
-        public float TemperatureFahrenheit
+        public double TemperatureCelsius { get; set; }
+        public double TemperatureFahrenheit
         {
             get
             {

@@ -5,6 +5,6 @@ namespace WeatherForecast.Models
         public Temperature LowestTemperature { get; set; } = new Temperature();
         public Temperature HighestTemperature { get; set; } = new Temperature();
 
-        public float Snowfall { get; set; }
+        public double Snowfall { get; set; }
     }
 }
