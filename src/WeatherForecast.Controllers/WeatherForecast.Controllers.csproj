@@ -1,0 +1,15 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <ItemGroup>
+    <ProjectReference Include="..\WeatherForecast.Models\WeatherForecast.Models.csproj" />
+    <ProjectReference Include="..\WeatherForecast.Data\WeatherForecast.Data.csproj" />
+    <ProjectReference Include="..\WeatherForecast.Services\WeatherForecast.Services.csproj" />
+  </ItemGroup>
+
+  <PropertyGroup>
+    <TargetFramework>net7.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
+
+</Project>
