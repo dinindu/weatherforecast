@@ -25,5 +25,5 @@
 formula to convert temperature from Celcius to Fahrenheit
 
 ```
-(0°C × 9/5) + 32 = 32°F
+(0°C × 1.8) + 32 = 32°F
 ```
