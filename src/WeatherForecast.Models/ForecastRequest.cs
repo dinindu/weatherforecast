@@ -1,4 +1,5 @@
 ﻿namespace WeatherForecast.Models;
+using FluentValidation.Results;
 
 public class ForecastRequest
 {
@@ -6,9 +7,10 @@ public class ForecastRequest
     public double Latitude { get; set; }
     public double Longitude { get; set; }
 
-    public bool IsValid()
+    public (bool isValid, string errorMessage) IsValid()
     {
-        //TODO: implement validation
-        return true;
+        ForecastRequestValidator validator = new ForecastRequestValidator();
+        ValidationResult result = validator.Validate(this);
+        return (result.IsValid, result.ToString());
     }
 }

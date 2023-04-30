@@ -15,17 +15,18 @@ namespace WeatherForecast.Controllers
             this._dataStore = dataStore;
         }
 
-        public async Task<bool> ProcessForecastSummary(ForecastRequest request)
+        public async Task<(bool success, string errorMessage)> ProcessForecastSummary(ForecastRequest request)
         {
-            if (request.IsValid())
+            (bool isValid, string errorMessage) = request.IsValid();
+
+            if (isValid)
             {
                 var export = await _forecastService.GetForecastSummary(request);
-                return _dataStore.SaveForecastSummary(export);
+                return (_dataStore.SaveForecastSummary(export), string.Empty);
             }
             else
             {
-                //TODO: return validation error messages
-                return false;
+                return (false, errorMessage);
             }
         }
     }

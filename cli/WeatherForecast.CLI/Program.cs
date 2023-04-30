@@ -29,6 +29,7 @@ namespace WeatherForecast.CLI
         public static async Task<bool> InitiateForecastSummary(ForecastRequest forecastRequest)
         {
             bool success = false;
+            string errorMessage = string.Empty;
             //TODO: Get configurations from a common config file
             var fileName = Path.Combine("./output/", $"weatherExport_{DateTime.Today.ToString("yyyyMMdd")}.json");
             try
@@ -41,7 +42,7 @@ namespace WeatherForecast.CLI
 
                 var forecastController = new ForecastController(openMeteoService, jsonStore);
 
-                success = await forecastController.ProcessForecastSummary(forecastRequest);
+                (success, errorMessage) = await forecastController.ProcessForecastSummary(forecastRequest);
             }
             catch (Exception e)
             {
@@ -57,6 +58,8 @@ namespace WeatherForecast.CLI
                 else
                 {
                     Console.WriteLine("Failed to export Weather Forecast!");
+                    Console.WriteLine($"Error(s):");
+                    Console.WriteLine(errorMessage);
                 }
             }
             return success;
