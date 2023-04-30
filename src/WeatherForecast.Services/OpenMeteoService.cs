@@ -19,34 +19,34 @@ namespace WeatherForecast.Services
             [JsonPropertyName("snowfall")]
             public List<double> Snowfalls { get; set; }
         }
-        record ForecastRsponse
+        record OpenMeteoForecastRsponse
         {
             public Hourly hourly { get; set; }
         }
 
         public string BaseURL { get; set; }
-        public async Task<WeatherExport> GetWeatherForecast(WeatherRequest request)
+        public async Task<ForecastSummary> GetForecastSummary(ForecastRequest request)
         {
-            var response = await GetForecastRsponse(request);
+            var response = await GetAPIRsponse(request);
             return SummarizeForecast(response);
         }
 
-        private async Task<ForecastRsponse> GetForecastRsponse(WeatherRequest weatherRequest)
+        private async Task<OpenMeteoForecastRsponse> GetAPIRsponse(ForecastRequest forecastRequest)
         {
             var client = new RestClient(BaseURL);
             var request = new RestRequest("/v1/forecast")
-                .AddParameter("latitude", weatherRequest.Latitude)
-                .AddParameter("longitude", weatherRequest.Longitude)
+                .AddParameter("latitude", forecastRequest.Latitude)
+                .AddParameter("longitude", forecastRequest.Longitude)
                 .AddParameter("hourly", "temperature_2m,snowfall")
-                .AddParameter("forecast_days", weatherRequest.ForecastDays);
+                .AddParameter("forecast_days", forecastRequest.ForecastDays);
 
-            var response = await client.GetAsync<ForecastRsponse>(request);
+            var response = await client.GetAsync<OpenMeteoForecastRsponse>(request);
             return response;
         }
 
-        private WeatherExport SummarizeForecast(ForecastRsponse response)
+        private ForecastSummary SummarizeForecast(OpenMeteoForecastRsponse response)
         {
-            var forecast = new WeatherExport();
+            var forecastSummary = new ForecastSummary();
 
             const int hours_per_day = 24;
             IEnumerable<double[]> dailyTemperatures = response.hourly.Temperatures.Chunk(hours_per_day);
@@ -59,16 +59,16 @@ namespace WeatherForecast.Services
                 var dailySnowfall = dailySnowfalls.ElementAt(i);
                 var dailyTime = dailyTimes.ElementAt(i);
 
-                var weatherRecord = new WeatherRecord();
-                weatherRecord.LowestTemperature.TemperatureCelsius = dailyTemperature.Min();
-                weatherRecord.HighestTemperature.TemperatureCelsius = dailyTemperature.Max();
-                weatherRecord.Snowfall = dailySnowfall.Sum();
-                weatherRecord.Date = DateTime.Parse(dailyTime.FirstOrDefault()).ToString("yyyy-MM-dd");
+                var forecastRecord = new ForecastRecord();
+                forecastRecord.LowestTemperature.TemperatureCelsius = dailyTemperature.Min();
+                forecastRecord.HighestTemperature.TemperatureCelsius = dailyTemperature.Max();
+                forecastRecord.Snowfall = dailySnowfall.Sum();
+                forecastRecord.Date = DateTime.Parse(dailyTime.FirstOrDefault()).ToString("yyyy-MM-dd");
 
-                forecast.Data.Add(weatherRecord);
+                forecastSummary.Data.Add(forecastRecord);
             }
 
-            return forecast;
+            return forecastSummary;
         }
     }
 }

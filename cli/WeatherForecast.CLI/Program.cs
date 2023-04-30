@@ -13,20 +13,20 @@ namespace WeatherForecast.CLI
             CommandLine.Parser.Default.ParseArguments<Options>(args)
                 .WithParsed<Options>(o =>
                 {
-                    Console.WriteLine($"Getting Weather Forecast for {o.Days} day/s at Latitude: {o.Latitude} and Longitude: {o.Longitude}");
+                    Console.WriteLine($"Getting Weather Forecast summary for {o.Days} day/s at Latitude: {o.Latitude} and Longitude: {o.Longitude}");
 
-                    var weatherRequest = new WeatherRequest()
+                    var forecastRequest = new ForecastRequest()
                     {
                         ForecastDays = o.Days,
                         Latitude = o.Latitude,
                         Longitude = o.Longitude
                     };
 
-                    RunWeatherForecast(weatherRequest).Wait();
+                    InitiateForecastSummary(forecastRequest).Wait();
                 });
         }
 
-        public static async Task<bool> RunWeatherForecast(WeatherRequest weatherRequest)
+        public static async Task<bool> InitiateForecastSummary(ForecastRequest forecastRequest)
         {
             bool success = false;
             //TODO: Get configurations from a common config file
@@ -41,7 +41,7 @@ namespace WeatherForecast.CLI
 
                 var forecastController = new ForecastController(openMeteoService, jsonStore);
 
-                success = await forecastController.ProcessWeatherExport(weatherRequest);
+                success = await forecastController.ProcessForecastSummary(forecastRequest);
             }
             catch (Exception e)
             {

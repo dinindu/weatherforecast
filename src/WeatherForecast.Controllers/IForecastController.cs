@@ -4,6 +4,6 @@ namespace WeatherForecast.Controllers
 {
     public interface IForecastController
     {
-        Task<bool> ProcessWeatherExport(WeatherRequest request);
+        Task<bool> ProcessForecastSummary(ForecastRequest request);
     }
 }

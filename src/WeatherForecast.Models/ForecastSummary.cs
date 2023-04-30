@@ -1,9 +1,9 @@
 using System.Text.Json.Serialization;
 namespace WeatherForecast.Models
 {
-    public class WeatherExport
+    public class ForecastSummary
     {
         [JsonPropertyName("data")]
-        public List<WeatherRecord> Data { get; set; } = new List<WeatherRecord>();
+        public List<ForecastRecord> Data { get; set; } = new List<ForecastRecord>();
     }
 }

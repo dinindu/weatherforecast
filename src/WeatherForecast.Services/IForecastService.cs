@@ -6,6 +6,6 @@ namespace WeatherForecast.Services
     {
         public string BaseURL { get; set; }
 
-        Task<WeatherExport> GetWeatherForecast(WeatherRequest weatherRequest);
+        Task<ForecastSummary> GetForecastSummary(ForecastRequest request);
     }
 }

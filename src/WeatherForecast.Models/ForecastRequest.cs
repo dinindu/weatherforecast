@@ -1,6 +1,6 @@
 ﻿namespace WeatherForecast.Models;
 
-public class WeatherRequest
+public class ForecastRequest
 {
     public int ForecastDays { get; set; }
     public double Latitude { get; set; }

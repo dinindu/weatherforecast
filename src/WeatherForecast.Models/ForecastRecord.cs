@@ -1,7 +1,7 @@
 using System.Text.Json.Serialization;
 namespace WeatherForecast.Models
 {
-    public class WeatherRecord
+    public class ForecastRecord
     {
         [JsonPropertyName("date")]
         public string Date { get; set; }

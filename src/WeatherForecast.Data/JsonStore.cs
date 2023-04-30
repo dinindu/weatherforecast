@@ -5,9 +5,9 @@ namespace WeatherForecast.Data
     public class JsonStore : IDataStore
     {
         public string FileName { get; set; }
-        public bool SaveForecast(WeatherExport forecast)
+        public bool SaveForecastSummary(ForecastSummary forecastSummary)
         {
-            string json = JsonSerializer.Serialize(forecast);
+            string json = JsonSerializer.Serialize(forecastSummary);
             File.WriteAllText(FileName, json);
 
             return true;
