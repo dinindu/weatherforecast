@@ -11,4 +11,11 @@
     <PackageReference Include="CommandLineParser" Version="2.9.1" />
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\..\src\WeatherForecast.Controllers\WeatherForecast.Controllers.csproj" />
+    <ProjectReference Include="..\..\src\WeatherForecast.Data\WeatherForecast.Data.csproj" />
+    <ProjectReference Include="..\..\src\WeatherForecast.Services\WeatherForecast.Services.csproj" />
+    <ProjectReference Include="..\..\src\WeatherForecast.Models\WeatherForecast.Models.csproj" />
+  </ItemGroup>
+
 </Project>

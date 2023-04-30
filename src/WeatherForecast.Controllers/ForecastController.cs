@@ -15,11 +15,11 @@ namespace WeatherForecast.Controllers
             this._dataStore = dataStore;
         }
 
-        public bool ProcessWeatherExport(WeatherRequest request)
+        public async Task<bool> ProcessWeatherExport(WeatherRequest request)
         {
             if (request.IsValid())
             {
-                var export = _forecastService.GetWeatherForecast(request);
+                var export = await _forecastService.GetWeatherForecast(request);
                 return _dataStore.SaveForecast(export);
             }
             else
