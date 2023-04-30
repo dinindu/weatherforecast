@@ -1,6 +1,7 @@
 using System.ComponentModel;
 using System.Globalization;
 using System.Text.Json.Serialization;
+using WeatherForecast.Services.OpenMeteo;
 
 using WeatherForecast.Models;
 using RestSharp;
@@ -8,22 +9,6 @@ namespace WeatherForecast.Services
 {
     public class OpenMeteoService : IForecastService
     {
-        record Hourly
-        {
-            [JsonPropertyName("time")]
-            public List<string> Times { get; set; }
-
-            [JsonPropertyName("temperature_2m")]
-            public List<double> Temperatures { get; set; }
-
-            [JsonPropertyName("snowfall")]
-            public List<double> Snowfalls { get; set; }
-        }
-        record OpenMeteoForecastRsponse
-        {
-            public Hourly hourly { get; set; }
-        }
-
         public string BaseURL { get; set; }
         public async Task<ForecastSummary> GetForecastSummary(ForecastRequest request)
         {
