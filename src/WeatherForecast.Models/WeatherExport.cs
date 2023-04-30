@@ -1,8 +1,9 @@
-
+using System.Text.Json.Serialization;
 namespace WeatherForecast.Models
 {
     public class WeatherExport
     {
-        public List<WeatherRecord> Records { get; set; } = new List<WeatherRecord>();
+        [JsonPropertyName("data")]
+        public List<WeatherRecord> Data { get; set; } = new List<WeatherRecord>();
     }
 }

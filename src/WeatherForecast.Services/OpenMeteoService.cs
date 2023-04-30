@@ -10,6 +10,9 @@ namespace WeatherForecast.Services
     {
         record Hourly
         {
+            [JsonPropertyName("time")]
+            public List<string> Times { get; set; }
+
             [JsonPropertyName("temperature_2m")]
             public List<double> Temperatures { get; set; }
 
@@ -21,8 +24,7 @@ namespace WeatherForecast.Services
             public Hourly hourly { get; set; }
         }
 
-        //TODO:remove hard coded URL
-        public string BaseURL { get; set; } = "https://api.open-meteo.com";
+        public string BaseURL { get; set; }
         public async Task<WeatherExport> GetWeatherForecast(WeatherRequest request)
         {
             var response = await GetForecastRsponse(request);
@@ -49,22 +51,21 @@ namespace WeatherForecast.Services
             const int hours_per_day = 24;
             IEnumerable<double[]> dailyTemperatures = response.hourly.Temperatures.Chunk(hours_per_day);
             IEnumerable<double[]> dailySnowfalls = response.hourly.Snowfalls.Chunk(hours_per_day);
+            IEnumerable<string[]> dailyTimes = response.hourly.Times.Chunk(hours_per_day);
 
             for (int i = 0; i < dailyTemperatures.Count(); i++)
             {
                 var dailyTemperature = dailyTemperatures.ElementAt(i);
                 var dailySnowfall = dailySnowfalls.ElementAt(i);
-
-                var lowestTemperature = dailyTemperature.Min();
-                var highestTemperature = dailyTemperature.Max();
-                var totalSnowfall = dailySnowfall.Sum();
+                var dailyTime = dailyTimes.ElementAt(i);
 
                 var weatherRecord = new WeatherRecord();
-                weatherRecord.LowestTemperature.TemperatureCelsius = lowestTemperature;
-                weatherRecord.HighestTemperature.TemperatureCelsius = highestTemperature;
-                weatherRecord.Snowfall = totalSnowfall;
+                weatherRecord.LowestTemperature.TemperatureCelsius = dailyTemperature.Min();
+                weatherRecord.HighestTemperature.TemperatureCelsius = dailyTemperature.Max();
+                weatherRecord.Snowfall = dailySnowfall.Sum();
+                weatherRecord.Date = DateTime.Parse(dailyTime.FirstOrDefault()).ToString("yyyy-MM-dd");
 
-                forecast.Records.Add(weatherRecord);
+                forecast.Data.Add(weatherRecord);
             }
 
             return forecast;
