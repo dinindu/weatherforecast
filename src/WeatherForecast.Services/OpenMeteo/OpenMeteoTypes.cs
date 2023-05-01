@@ -2,7 +2,7 @@ using System.Text.Json.Serialization;
 
 namespace WeatherForecast.Services.OpenMeteo
 {
-    record Hourly
+    public record Hourly
     {
         [JsonPropertyName("time")]
         public List<string> Times { get; set; }
@@ -13,7 +13,7 @@ namespace WeatherForecast.Services.OpenMeteo
         [JsonPropertyName("snowfall")]
         public List<double> Snowfalls { get; set; }
     }
-    record OpenMeteoForecastRsponse
+    public record OpenMeteoForecastRsponse
     {
         public Hourly hourly { get; set; }
     }

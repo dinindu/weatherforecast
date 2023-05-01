@@ -9,7 +9,7 @@
 - Should return formatted data on success
 - Should return forecast for the specified number of days
 - Should calculate lowest and highest temperatures, snowfall correctly
-- SHould calculate temperatures in Fahrenheit correctly
+- Should calculate temperatures in Fahrenheit correctly
 - Should have the correct naming convention for the JSON file
 - Should fail with correct error message on internal server error
 - Should return appropriate error message on bad request

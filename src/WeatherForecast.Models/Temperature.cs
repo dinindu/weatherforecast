@@ -11,7 +11,7 @@ namespace WeatherForecast.Models
         {
             get
             {
-                return (TemperatureCelsius * 1.8f) + 32;
+                return Math.Round((TemperatureCelsius * 1.8f) + 32, 2);
             }
         }
     }

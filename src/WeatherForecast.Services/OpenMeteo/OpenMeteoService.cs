@@ -29,6 +29,33 @@ namespace WeatherForecast.Services
             return (SummarizeForecast(response), string.Empty);
         }
 
+        public ForecastSummary SummarizeForecast(OpenMeteoForecastRsponse response)
+        {
+            var forecastSummary = new ForecastSummary();
+
+            const int hours_per_day = 24;
+            IEnumerable<double[]> dailyTemperatures = response.hourly.Temperatures.Chunk(hours_per_day);
+            IEnumerable<double[]> dailySnowfalls = response.hourly.Snowfalls.Chunk(hours_per_day);
+            IEnumerable<string[]> dailyTimes = response.hourly.Times.Chunk(hours_per_day);
+
+            for (int i = 0; i < dailyTemperatures.Count(); i++)
+            {
+                var dailyTemperature = dailyTemperatures.ElementAt(i);
+                var dailySnowfall = dailySnowfalls.ElementAt(i);
+                var dailyTime = dailyTimes.ElementAt(i);
+
+                var forecastRecord = new ForecastRecord();
+                forecastRecord.LowestTemperature.TemperatureCelsius = Math.Round(dailyTemperature.Min(), 2);
+                forecastRecord.HighestTemperature.TemperatureCelsius = Math.Round(dailyTemperature.Max(), 2);
+                forecastRecord.Snowfall = Math.Round(dailySnowfall.Sum(), 2);
+                forecastRecord.Date = DateTime.Parse(dailyTime.First()).ToString("yyyy-MM-dd");
+
+                forecastSummary.Data.Add(forecastRecord);
+            }
+
+            return forecastSummary;
+        }
+
         private async Task<(OpenMeteoForecastRsponse? response, string errorMessage)> GetAPIRsponse(ForecastRequest forecastRequest)
         {
             OpenMeteoForecastRsponse? response = null;
@@ -52,33 +79,6 @@ namespace WeatherForecast.Services
                 return (null, e.Message);
             }
             return (response, string.Empty);
-        }
-
-        private ForecastSummary SummarizeForecast(OpenMeteoForecastRsponse response)
-        {
-            var forecastSummary = new ForecastSummary();
-
-            const int hours_per_day = 24;
-            IEnumerable<double[]> dailyTemperatures = response.hourly.Temperatures.Chunk(hours_per_day);
-            IEnumerable<double[]> dailySnowfalls = response.hourly.Snowfalls.Chunk(hours_per_day);
-            IEnumerable<string[]> dailyTimes = response.hourly.Times.Chunk(hours_per_day);
-
-            for (int i = 0; i < dailyTemperatures.Count(); i++)
-            {
-                var dailyTemperature = dailyTemperatures.ElementAt(i);
-                var dailySnowfall = dailySnowfalls.ElementAt(i);
-                var dailyTime = dailyTimes.ElementAt(i);
-
-                var forecastRecord = new ForecastRecord();
-                forecastRecord.LowestTemperature.TemperatureCelsius = dailyTemperature.Min();
-                forecastRecord.HighestTemperature.TemperatureCelsius = dailyTemperature.Max();
-                forecastRecord.Snowfall = dailySnowfall.Sum();
-                forecastRecord.Date = DateTime.Parse(dailyTime.First()).ToString("yyyy-MM-dd");
-
-                forecastSummary.Data.Add(forecastRecord);
-            }
-
-            return forecastSummary;
         }
     }
 }
