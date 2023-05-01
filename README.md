@@ -44,7 +44,13 @@ Getting Weather Forecast summary for 2 day/s at Latitude: 52.52 and Longitude: 1
 Successfully exported Weather Forecast to the file: ./output/weatherExport_20230502.json
 ```
 
-\*\* PN: The output file will be stored under ~/cli/WeatherForecast.CLI/output directory
+## Exported JSON file & Logs
+
+- The output file will be stored under ~/cli/WeatherForecast.CLI/output directory
+- Log files will be stored under ~/cli/logs directory
+
+<br/>
+<br/>
 
 ## Test Plan / Requirements
 
