@@ -30,8 +30,10 @@ namespace WeatherForecast.CLI
         {
             bool success = false;
             string errorMessage = string.Empty;
+
             //TODO: Get configurations from a common config file
             var fileName = Path.Combine("./output/", $"weatherExport_{DateTime.Today.ToString("yyyyMMdd")}.json");
+
             try
             {
                 var openMeteoService = new OpenMeteoService();

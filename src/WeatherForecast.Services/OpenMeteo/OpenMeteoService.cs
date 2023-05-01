@@ -10,14 +10,9 @@ namespace WeatherForecast.Services
     public class OpenMeteoService : IForecastService
     {
         private const string FORECAST_ENDPOINT = "/v1/forecast";
-        private HttpClient _httpClient;
 
         public string BaseURL { get; set; }
 
-        public OpenMeteoService()
-        {
-            _httpClient = new HttpClient();
-        }
         public async Task<(ForecastSummary? summary, string errorMessage)> GetForecastSummary(ForecastRequest request)
         {
             (OpenMeteoForecastRsponse? response, string errorMessage) = await GetAPIRsponse(request);
