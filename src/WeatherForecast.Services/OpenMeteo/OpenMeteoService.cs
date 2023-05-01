@@ -42,7 +42,7 @@ namespace WeatherForecast.Services
                 var request = new RestRequest(FORECAST_ENDPOINT)
                     .AddParameter("latitude", forecastRequest.Latitude)
                     .AddParameter("longitude", forecastRequest.Longitude)
-                    .AddParameter("hourly", "temperature_2m,snowfall,pala")
+                    .AddParameter("hourly", "temperature_2m,snowfall")
                     .AddParameter("forecast_days", forecastRequest.ForecastDays);
 
                 response = await client.GetAsync<OpenMeteoForecastRsponse>(request);
