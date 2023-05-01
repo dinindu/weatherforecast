@@ -17,17 +17,22 @@ namespace WeatherForecast.Controllers
 
         public async Task<(bool success, string errorMessage)> ProcessForecastSummary(ForecastRequest request)
         {
-            (bool isValid, string errorMessage) = request.IsValid();
+            string errorMessage = string.Empty;
+            (bool isValid, errorMessage) = request.IsValid();
 
-            if (isValid)
-            {
-                var export = await _forecastService.GetForecastSummary(request);
-                return (_dataStore.SaveForecastSummary(export), string.Empty);
-            }
-            else
+            // Porpogate validation error messages
+            if (!isValid && errorMessage != string.Empty)
             {
                 return (false, errorMessage);
             }
+
+            (ForecastSummary? summary, errorMessage) = await _forecastService.GetForecastSummary(request);
+            if (summary == null && errorMessage != string.Empty)
+            {
+                return (false, errorMessage);
+            }
+
+            return _dataStore.SaveForecastSummary(summary);
         }
     }
 }

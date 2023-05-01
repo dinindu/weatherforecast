@@ -47,7 +47,7 @@ namespace WeatherForecast.CLI
             catch (Exception e)
             {
                 success = false;
-                Console.WriteLine($"Error Occurred: {e.Message}");
+                errorMessage = e.Message;
             }
             finally
             {

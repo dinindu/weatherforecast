@@ -4,6 +4,6 @@ namespace WeatherForecast.Data
 {
     public interface IDataStore
     {
-        public bool SaveForecastSummary(ForecastSummary forecastSummary);
+        public (bool success, string errorMessage) SaveForecastSummary(ForecastSummary forecastSummary);
     }
 }

@@ -9,24 +9,49 @@ namespace WeatherForecast.Services
 {
     public class OpenMeteoService : IForecastService
     {
+        private const string FORECAST_ENDPOINT = "/v1/forecast";
+        private HttpClient _httpClient;
+
         public string BaseURL { get; set; }
-        public async Task<ForecastSummary> GetForecastSummary(ForecastRequest request)
+
+        public OpenMeteoService()
         {
-            var response = await GetAPIRsponse(request);
-            return SummarizeForecast(response);
+            _httpClient = new HttpClient();
+        }
+        public async Task<(ForecastSummary? summary, string errorMessage)> GetForecastSummary(ForecastRequest request)
+        {
+            (OpenMeteoForecastRsponse? response, string errorMessage) = await GetAPIRsponse(request);
+            if (response == null && errorMessage != string.Empty)
+            {
+                return (null, errorMessage);
+            }
+
+            return (SummarizeForecast(response), string.Empty);
         }
 
-        private async Task<OpenMeteoForecastRsponse> GetAPIRsponse(ForecastRequest forecastRequest)
+        private async Task<(OpenMeteoForecastRsponse? response, string errorMessage)> GetAPIRsponse(ForecastRequest forecastRequest)
         {
-            var client = new RestClient(BaseURL);
-            var request = new RestRequest("/v1/forecast")
-                .AddParameter("latitude", forecastRequest.Latitude)
-                .AddParameter("longitude", forecastRequest.Longitude)
-                .AddParameter("hourly", "temperature_2m,snowfall")
-                .AddParameter("forecast_days", forecastRequest.ForecastDays);
+            OpenMeteoForecastRsponse? response = null;
+            try
+            {
+                var options = new RestClientOptions(BaseURL)
+                {
+                    ThrowOnAnyError = true
+                };
+                var client = new RestClient(options);
+                var request = new RestRequest(FORECAST_ENDPOINT)
+                    .AddParameter("latitude", forecastRequest.Latitude)
+                    .AddParameter("longitude", forecastRequest.Longitude)
+                    .AddParameter("hourly", "temperature_2m,snowfall,pala")
+                    .AddParameter("forecast_days", forecastRequest.ForecastDays);
 
-            var response = await client.GetAsync<OpenMeteoForecastRsponse>(request);
-            return response;
+                response = await client.GetAsync<OpenMeteoForecastRsponse>(request);
+            }
+            catch (Exception e)
+            {
+                return (null, e.Message);
+            }
+            return (response, string.Empty);
         }
 
         private ForecastSummary SummarizeForecast(OpenMeteoForecastRsponse response)
@@ -48,7 +73,7 @@ namespace WeatherForecast.Services
                 forecastRecord.LowestTemperature.TemperatureCelsius = dailyTemperature.Min();
                 forecastRecord.HighestTemperature.TemperatureCelsius = dailyTemperature.Max();
                 forecastRecord.Snowfall = dailySnowfall.Sum();
-                forecastRecord.Date = DateTime.Parse(dailyTime.FirstOrDefault()).ToString("yyyy-MM-dd");
+                forecastRecord.Date = DateTime.Parse(dailyTime.First()).ToString("yyyy-MM-dd");
 
                 forecastSummary.Data.Add(forecastRecord);
             }
